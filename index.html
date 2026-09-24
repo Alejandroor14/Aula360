@@ -3,44 +3,120 @@
   <head>
     <meta charset="utf-8">
     <title>Recorrido VR Salón</title>
+    
+    <!-- Logo/Favicon para la pestaña del navegador -->
     <link rel="icon" type="image/png" href="imagenes/uaem_valle.jpg">
-
+    
     <!-- Cargamos la librería A-Frame -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+
+    <!-- CSS con la paleta de colores UAEMéx -->
+    <style>
+      #pantalla-inicio {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        /* Fondo con degradado usando Verde UAEMéx (#2C5234) y Verde Secundario (#526855) */
+        background: linear-gradient(135deg, #2C5234 0%, #1d3723 50%, #526855 100%);
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .tarjeta-bienvenida {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        padding: 40px 60px;
+        border-radius: 16px;
+        border: 1px solid rgba(156, 132, 18, 0.3); /* Borde sutil en Oro UAEMéx */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        max-width: 600px;
+        width: 90%;
+      }
+
+      .titulo-bienvenida {
+        font-size: 2.8rem;
+        color: #FFFFFF;
+        margin: 0 0 10px 0;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+
+      .subtitulo-bienvenida {
+        font-size: 1.2rem;
+        color: #9C8412; /* Texto en Oro UAEMéx */
+        margin-bottom: 30px;
+        font-family: Arial, sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      #boton-empezar {
+        padding: 16px 40px;
+        font-size: 20px;
+        font-weight: bold;
+        /* Botón en Oro UAEMéx (#9C8412) con texto en Verde UAEMéx (#2C5234) */
+        background-color: #9C8412;
+        color: #2C5234;
+        border: 2px solid #9C8412;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0px 6px 15px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+      }
+
+      #boton-empezar:hover {
+        background-color: #2C5234;
+        color: #9C8412;
+        border-color: #9C8412;
+        transform: translateY(-3px);
+        box-shadow: 0px 10px 20px rgba(0,0,0,0.5);
+      }
+    </style>
   </head>
   <body>
-    <a-scene>
+    <!-- Pantalla de Inicio 2D estilo Institucional -->
+    <div id="pantalla-inicio">
+      <div class="tarjeta-bienvenida">
+        <h1 class="titulo-bienvenida">Bienvenido al Recorrido Virtual</h1>
+        <p class="subtitulo-bienvenida">Universidad Autónoma del Estado de México</p>
+        <button id="boton-empezar" onclick="empezarRecorrido()">Empezar Recorrido 360°</button>
+      </div>
+    </div>
+
+    <!-- Escena VR -->
+    <a-scene vr-mode-ui="enabled: false" style="display: none;">
       <a-assets>
-        <!-- Imágenes panorámicas etiquetadas correctamente -->
-        <img id="salon1" src="imagenes/salon1.jpg" crossorigin="anonymous"> 
-        <img id="salon2" src="imagenes/salon2.jpg" crossorigin="anonymous"> 
+        <img id="salon1" src="imagenes/salon1.jpg"> 
+        <img id="salon2" src="imagenes/salon2.jpg"> 
       </a-assets>
 
-      <!-- Fondo 360 del salón actual con parámetros para mayor nitidez -->
-      <a-sky 
-        id="fondo" 
-        src="#salon1" 
-        rotation="0 -90 0"
-        material="npot: true; minFilter: LinearFilter; magFilter: LinearFilter;">
-      </a-sky>
+      <a-sky id="fondo" src="#salon1" rotation="0 -90 0"></a-sky>
 
-      <!-- Cámara con FOV optimizado y cursor táctil -->
-      <a-entity camera look-controls fov="70" position="0 1.6 0">
-        <a-cursor color="yellow"></a-cursor>
+      <a-entity camera look-controls>
+        <a-cursor color="#9C8412"></a-cursor> <!-- Cursor ajustado a tono Oro UAEMéx -->
       </a-entity>
 
-      <!-- Flecha/Hotspot tipo Google Maps para ir al siguiente salón -->
-      <a-sphere 
-        id="btn-ir-salon2" 
-        position="0 0 -4" 
-        radius="0.4" 
-        color="#FF5722"
-        onclick="cambiarSalon('#salon2')">
+      <a-sphere id="btn-ir-salon2" position="0 0 -4" radius="0.4" color="#2C5234"
+                onclick="cambiarSalon('#salon2')">
       </a-sphere>
     </a-scene>
 
     <script>
-      // Función para cambiar la foto de fondo
+      function empezarRecorrido() {
+        document.getElementById('pantalla-inicio').style.display = 'none';
+        document.querySelector('a-scene').style.display = 'block';
+      }
+
       function cambiarSalon(idFoto) {
         document.querySelector('#fondo').setAttribute('src', idFoto);
       }
