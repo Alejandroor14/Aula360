@@ -5,7 +5,7 @@
     <title>Recorrido VR Salón</title>
     
     <!-- Logo/Favicon para la pestaña del navegador -->
-    <link rel="icon" type="image/png" href="imagenes/uaem_valle.jpg">
+    <link rel="icon" type="image/jpeg" href="imagenes/uaem_valle.jpg">
     
     <!-- Cargamos la librería A-Frame -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -18,7 +18,6 @@
         left: 0;
         width: 100%;
         height: 100vh;
-        /* Fondo con degradado usando Verde UAEMéx (#2C5234) y Verde Secundario (#526855) */
         background: linear-gradient(135deg, #2C5234 0%, #1d3723 50%, #526855 100%);
         z-index: 100;
         display: flex;
@@ -35,7 +34,7 @@
         backdrop-filter: blur(10px);
         padding: 40px 60px;
         border-radius: 16px;
-        border: 1px solid rgba(156, 132, 18, 0.3); /* Borde sutil en Oro UAEMéx */
+        border: 1px solid rgba(156, 132, 18, 0.3);
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
         max-width: 600px;
         width: 90%;
@@ -52,7 +51,7 @@
 
       .subtitulo-bienvenida {
         font-size: 1.2rem;
-        color: #9C8412; /* Texto en Oro UAEMéx */
+        color: #9C8412;
         margin-bottom: 30px;
         font-family: Arial, sans-serif;
         font-weight: 600;
@@ -64,7 +63,6 @@
         padding: 16px 40px;
         font-size: 20px;
         font-weight: bold;
-        /* Botón en Oro UAEMéx (#9C8412) con texto en Verde UAEMéx (#2C5234) */
         background-color: #9C8412;
         color: #2C5234;
         border: 2px solid #9C8412;
@@ -87,14 +85,14 @@
     <!-- Pantalla de Inicio 2D estilo Institucional -->
     <div id="pantalla-inicio">
       <div class="tarjeta-bienvenida">
-        <h1 class="titulo-bienvenida">Salón Virtual B-111 </h1>
+        <h1 class="titulo-bienvenida">Salón Virtual B-111</h1>
         <p class="subtitulo-bienvenida">Universidad Autónoma del Estado de México</p>
         <button id="boton-empezar" onclick="empezarRecorrido()">Iniciar Vista 360°</button>
       </div>
     </div>
 
-    <!-- Escena VR -->
-    <a-scene vr-mode-ui="enabled: false" style="display: none;">
+    <!-- Escena VR: Reactivamos la interfaz VR y los sensores -->
+    <a-scene vr-mode-ui="enabled: true" device-orientation-permission-ui="enabled: true" style="display: none;">
       <a-assets>
         <img id="salon1" src="imagenes/salon1.jpg"> 
         <img id="salon2" src="imagenes/salon2.jpg"> 
@@ -102,8 +100,9 @@
 
       <a-sky id="fondo" src="#salon1" rotation="0 -90 0"></a-sky>
 
-      <a-entity camera look-controls>
-        <a-cursor color="#9C8412"></a-cursor> <!-- Cursor ajustado a tono Oro UAEMéx -->
+      <!-- Cámara configurada con soporte para giroscopio (magic window / movimiento del celular) -->
+      <a-entity camera look-controls="magicWindowTrackingEnabled: true; touchEnabled: true">
+        <a-cursor color="#9C8412"></a-cursor>
       </a-entity>
 
       <a-sphere id="btn-ir-salon2" position="0 0 -4" radius="0.4" color="#2C5234"
@@ -113,8 +112,23 @@
 
     <script>
       function empezarRecorrido() {
+        // Ocultar pantalla de inicio
         document.getElementById('pantalla-inicio').style.display = 'none';
-        document.querySelector('a-scene').style.display = 'block';
+        
+        // Mostrar la escena 360
+        const scene = document.querySelector('a-scene');
+        scene.style.display = 'block';
+
+        // Solicitar permisos de Orientación del Dispositivo (Giroscopio) en móviles
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+              if (permissionState === 'granted') {
+                window.addEventListener('deviceorientation', () => {});
+              }
+            })
+            .catch(console.error);
+        }
       }
 
       function cambiarSalon(idFoto) {
