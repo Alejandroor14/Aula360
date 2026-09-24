@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Recorrido VR Salón</title>
+    <link rel="icon" type="image/png" href="imagenes/uaem_valle.jpg">
+
+    <!-- Cargamos la librería A-Frame -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <!-- Imágenes panorámicas etiquetadas correctamente -->
+        <img id="salon1" src="imagenes/salon1.jpg" crossorigin="anonymous"> 
+        <!-- <img id="salon2" src="imagenes/salon2.jpg" crossorigin="anonymous"> -->
+      </a-assets>
+
+      <!-- Fondo 360 del salón actual con parámetros para mayor nitidez -->
+      <a-sky 
+        id="fondo" 
+        src="#salon1" 
+        rotation="0 -90 0"
+        material="npot: true; minFilter: LinearFilter; magFilter: LinearFilter;">
+      </a-sky>
+
+      <!-- Cámara con FOV optimizado y cursor táctil -->
+      <a-entity camera look-controls fov="70" position="0 1.6 0">
+        <a-cursor color="yellow"></a-cursor>
+      </a-entity>
+
+      <!-- Flecha/Hotspot tipo Google Maps para ir al siguiente salón -->
+      <a-sphere 
+        id="btn-ir-salon2" 
+        position="0 0 -4" 
+        radius="0.4" 
+        color="#FF5722"
+        onclick="cambiarSalon('#salon2')">
+      </a-sphere>
+    </a-scene>
+
+    <script>
+      // Función para cambiar la foto de fondo
+      function cambiarSalon(idFoto) {
+        document.querySelector('#fondo').setAttribute('src', idFoto);
+      }
+    </script>
+  </body>
+</html>
